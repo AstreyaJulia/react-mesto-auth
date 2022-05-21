@@ -40,6 +40,7 @@ const AddPlacePopup = (props) => {
     function handleOnClose() {
         props.onClose();
         setFormInputsValid({name: false, link: false});
+        setFormValidationMessages({name: "", link: ""});
         setFormValid(false);
     }
 
