@@ -8,7 +8,7 @@ const SERVER_ERRORS = {
     401: "Пользователь с введенным email не найден."
 }
 
-/** Хандл проверки ответа, возвращает ответ или ошибку
+/** Хандл проверки ответа при регистрации, возвращает ответ или ошибку
  * @param res - ответ
  * @returns {*}
  */
@@ -20,6 +20,10 @@ const handleRegResponse = (res) => {
     }
 }
 
+/** Хандл проверки ответа при авторизации, возвращает ответ или ошибку
+ * @param res - ответ
+ * @returns {*}
+ */
 const handleAuthResponse = (res) => {
     if (res.status === 400 || res.status === 401) {
         throw new Error(SERVER_ERRORS[res.status]);
@@ -60,7 +64,7 @@ export const authorize = (loginData) => {
         .then((res) => handleAuthResponse(res))
 }
 
-/** Получение данных о пользователе
+/** Получает email по токену, проверка валидности токена
  * @param token - jwt-токен
  * @returns {Promise<any>}
  */

@@ -104,6 +104,9 @@ export class Api {
             .then(res => this._handlePromiseReturn(res));
     }
 
+    /** Параллельное получение информации о пользователе и карточек
+     * @returns {Promise<Response[]>}
+     */
     getAllData() {
         return Promise.all([this.getUserInfo(), this.getCards()]);
     }

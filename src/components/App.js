@@ -74,6 +74,7 @@ function App() {
     /** Состояние Email пользователя, для шапки */
     const [userEmail, setUserEmail] = React.useState("");
 
+    /** Стейт состояния получения данных пользователя и карточек */
     const [isLoadingAllData, setIsLoadingAllData] = React.useState(false);
 
     /** История переходов страниц */
@@ -233,7 +234,7 @@ function App() {
         })
     }
 
-    /** Получает email по токену */
+    /** Получает email по токену, проверка валидности токена */
     const tokenCheck = () => {
         const token = localStorage.getItem("jwt");
         if (token) {
@@ -253,20 +254,21 @@ function App() {
         setLoggedIn(false);
     }
 
+    /** Перенаправление на главную для зарег. пользователя и на login для незарег. пользователя */
     useEffect(() => {
         loggedIn
-            ? history.push('/')
-            : history.push('/login')
+            ? history.push("/")
+            : history.push("/login")
         // eslint-disable-next-line
     }, [loggedIn]);
 
+    /** Проверка токена, получение email */
     useEffect(() => {
         tokenCheck();
     }, []);
 
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
-    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
-
+    /** Получаем массив карточек, пишем в состояние cards */
     useEffect(() => {
         if (loggedIn) {
             setIsLoadingAllData(true);
