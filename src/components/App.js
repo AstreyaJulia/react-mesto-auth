@@ -206,7 +206,7 @@ function App() {
                 handleInfoTooltipPopupOpen();
                 setInfoTooltipType("reg_success");
                 setInfoTooltipOpen(true);
-                history.push("/login");
+                history.push("/sign-in");
             })
             .catch((err) => {
                 handleInfoTooltipPopupOpen();
@@ -258,7 +258,7 @@ function App() {
     useEffect(() => {
         loggedIn
             ? history.push("/")
-            : history.push("/login")
+            : history.push("/sign-in")
         // eslint-disable-next-line
     }, [loggedIn]);
 
@@ -302,14 +302,14 @@ function App() {
                             isLoadingAllData={isLoadingAllData}
                         />
                     </ProtectedRoute>
-                    <Route exact path="/login">
+                    <Route exact path="/sign-in">
                         <Login handleLogin={handleLogin} tokenCheck={tokenCheck}/>
                     </Route>
-                    <Route exact path="/register">
+                    <Route exact path="/sign-up">
                         <Register handleRegister={handleRegister}/>
                     </Route>
                     <Route>
-                        {loggedIn ? <Redirect to="/"/> : <Redirect to="/login"/>}
+                        {loggedIn ? <Redirect to="/"/> : <Redirect to="/sign-in"/>}
                     </Route>
                 </Switch>
                 <Footer/>

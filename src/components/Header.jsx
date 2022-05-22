@@ -26,11 +26,10 @@ const Header = (props) => {
                     onClick={handleOpenMenu}
                 />)}
                 {!props.loggedIn && (<>
-
-                    {location.pathname === "/register" && (
-                        <Link to="/login" className="header__button button">Войти</Link>)}
-                    {location.pathname === "/login" && (
-                        <Link to="/register" className="header__button button">Регистрация</Link>)}
+                    {location.pathname === "/sign-up" && (
+                        <Link to="/sign-in" className="header__button button">Войти</Link>)}
+                    {location.pathname === "/sign-in" && (
+                        <Link to="/sign-up" className="header__button button">Регистрация</Link>)}
                 </>)}
             </div>
             {props.loggedIn &&

@@ -57,7 +57,7 @@ const Register = (props) => {
             </form>
             <div className="form__login-group">
                 <p className="form__login-text">Уже зарегистрированы?</p>
-                <Link to="/login" className="form__login-link">Войти</Link>
+                <Link to="/sign-in" className="form__login-link">Войти</Link>
             </div>
         </div>
     </div>)
