@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PopupWithForm from "./PopupWithForm";
 
 const AddPlacePopup = (props) => {
@@ -73,11 +73,11 @@ const AddPlacePopup = (props) => {
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         setCard({name: "", link: ""});
     }, [props.popupOpen])
 
-    React.useEffect(() => {
+    useEffect(() => {
         Object.values(formInputsValid).filter(input => !input).length > 0
             ? setFormValid(false)
             : setFormValid(true)

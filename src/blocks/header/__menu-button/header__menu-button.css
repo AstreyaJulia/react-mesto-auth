@@ -1,0 +1,17 @@
+.header__menu-button {
+    border: unset;
+    padding: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='21' viewBox='0 0 24 21' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cline y1='1.5' x2='24' y2='1.5' stroke='white' stroke-width='3'/%3E%3Cline y1='10.5' x2='24' y2='10.5' stroke='white' stroke-width='3'/%3E%3Cline y1='19.5' x2='24' y2='19.5' stroke='white' stroke-width='3'/%3E%3C/svg%3E%0A");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    background-color: #000000;
+    display: none;
+}
+
+@media screen and (max-width: 740px) {
+    .header__menu-button {
+        display: flex;
+    }
+}

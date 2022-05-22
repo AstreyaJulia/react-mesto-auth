@@ -9,21 +9,7 @@ export const apiSettings = {
   }
 };
 
-/**
- * Настройки валидации
- * @param {string} formSelector - класс формы
- * @param {string} inputSelector - класс инпута
- * @param {string} submitButtonSelector - класс кнопки отправки формы
- * @param {string} inactiveButtonClass - класс, к-рый делает кнопку отправки формы заблокированной
- * @param {string} inputErrorClass - класс, подсвечивающий поле с ошибками
- * @param {string} errorClass - класс, делающий ошибку видимой
+/** Адрес сервера авторизации
+ * @type {string}
  */
-/** @type {Object} */
-export const validationSettings = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__submit",
-  inactiveButtonClass: "popup__submit_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible"
-};
+export const BASE_URL = "https://auth.nomoreparties.co";

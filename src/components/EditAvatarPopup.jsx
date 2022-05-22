@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PopupWithForm from "./PopupWithForm";
 
 const EditAvatarPopup = (props) => {
@@ -75,11 +75,11 @@ const EditAvatarPopup = (props) => {
     }
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         refAvatar.current.value = "";
     }, [props.popupOpen]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         Object.values(formInputsValid).filter(input => !input).length > 0
             ? setFormValid(false)
             : setFormValid(true)

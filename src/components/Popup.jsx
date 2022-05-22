@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from "react";
 
 /** Корень всех всплывашек с прослушивателями
- * @param props
+ * @param props - {closeHandler - ф-я закрытия, className - класс/ы всплывашки, children - содержимое}
  * @returns {JSX.Element}
  * @constructor */
 const Popup = (props) => {

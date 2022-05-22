@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import PopupWithForm from "./PopupWithForm";
 
@@ -80,11 +80,11 @@ const EditProfilePopup = (props) => {
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         setUserData({"name": name, "about": about})
     }, [name, about]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         Object.values(formInputsValid).filter(input => !input).length > 0
             ? setFormValid(false)
             : setFormValid(true)

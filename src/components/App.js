@@ -1,14 +1,28 @@
 import React, {useEffect, useState} from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
+import * as auth from "../utils/auth";
+
+/** Компоненты приложения */
+import Header from "./Header";
+import Footer from "./Footer";
+import PopupWithForm from "./PopupWithForm";
+import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+
+/** Компонент private route */
+import Main from "./Main";
+
+/** Страницы public routes */
+import Login from "./Login";
+import Register from "./Register";
+
+/** Роутинг */
+import {Redirect, Switch, Route, useHistory} from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
+import InfoTooltip from "./InfoTooltip";
 
 /**
  * @returns {JSX.Element}
@@ -45,8 +59,25 @@ function App() {
     const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
         React.useState(false);
 
+    /** Состояние всплывашки Tooltip карточки */
+    const [infoTooltipOpen, setInfoTooltipOpen] = React.useState(false);
+
+    /** Тип всплывашки Tooltip карточки */
+    const [infoTooltipType, setInfoTooltipType] = React.useState("error");
+
     /** Состояние сохранения данных */
     const [isLoading, setIsLoading] = React.useState(false);
+
+    /** Состояние входа пользователя */
+    const [loggedIn, setLoggedIn] = React.useState(false);
+
+    /** Состояние Email пользователя, для шапки */
+    const [userEmail, setUserEmail] = React.useState("");
+
+    const [isLoadingAllData, setIsLoadingAllData] = React.useState(false);
+
+    /** История переходов страниц */
+    const history = useHistory();
 
     /** Устанавливает выбранную карточку по нажатию
      * @param card */
@@ -75,6 +106,11 @@ function App() {
         setDeletePlacePopupOpen(true);
     }
 
+    /** Открывает всплывашку Tooltip */
+    function handleInfoTooltipPopupOpen() {
+        setInfoTooltipOpen(true);
+    }
+
     /** Закрывает все всплывашки / сбрасывает состояния */
     function closeAllPopups() {
         setSelectedCard({name: "", link: ""});
@@ -83,6 +119,7 @@ function App() {
         setNewPlacePopupOpen(false);
         setUpdateAvatarPopupOpen(false);
         setDeletePlacePopupOpen(false);
+        setInfoTooltipOpen(false);
     }
 
     /** Ставит/удаляет лайк
@@ -159,42 +196,126 @@ function App() {
             });
     }
 
-    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
-    useEffect(() => {
-        api.getUserInfo()
-            .then((res) => {
-                setCurrentUser(res);
+    /** Регистрация
+     * @param registerData - рег. данные {email: string, password: string}
+     */
+    const handleRegister = (registerData) => {
+        auth.register(registerData)
+            .then(() => {
+                handleInfoTooltipPopupOpen();
+                setInfoTooltipType("reg_success");
+                setInfoTooltipOpen(true);
+                history.push("/login");
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                handleInfoTooltipPopupOpen();
+                setInfoTooltipType("error");
+                setInfoTooltipOpen(true);
+                console.log(err)
+            });
+    }
+
+    /** Вход, запись полученного токена
+     * @param loginData - данные входа {email: string, password: string}
+     */
+    const handleLogin = (loginData) => {
+        auth.authorize(loginData)
+            .then((res) => {
+                setLoggedIn(true);
+                localStorage.setItem("jwt", res.token);
+                setUserEmail(loginData.email);
+                history.push("/");
+            }).catch((err) => {
+            handleInfoTooltipPopupOpen();
+            setInfoTooltipType("error");
+            setInfoTooltipOpen(true);
+            console.log(err);
+        })
+    }
+
+    /** Получает email по токену */
+    const tokenCheck = () => {
+        const token = localStorage.getItem("jwt");
+        if (token) {
+            auth.getContent(token)
+                .then((res) => {
+                    if (res.data) {
+                        setUserEmail(res.data.email);
+                        setLoggedIn(true);
+                    }
+                }).catch(err => console.log(err));
+        }
+    }
+
+    /** Выход из приложения. Удаление токена */
+    const handleSignOut = () => {
+        localStorage.removeItem("jwt");
+        setLoggedIn(false);
+    }
+
+    useEffect(() => {
+        loggedIn
+            ? history.push('/')
+            : history.push('/login')
+        // eslint-disable-next-line
+    }, [loggedIn]);
+
+    useEffect(() => {
+        tokenCheck();
     }, []);
 
-    /** Получаем массив карточек, пишем в состояние cards */
+    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
+    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
+
     useEffect(() => {
-        api.getCards()
-            .then((cardsArray) => {
-                setCards(cardsArray);
-            })
-            .catch((err) => console.log(err));
-    }, []);
+        if (loggedIn) {
+            setIsLoadingAllData(true);
+            api.getAllData()
+                .then((data) => {
+                        const [userData, cardsData] = data;
+                        setCards(cardsData);
+                        setCurrentUser(userData);
+                    }
+                ).catch(error => console.log(error))
+                .finally(() => {
+                    setIsLoadingAllData(false);
+                })
+        }
+    }, [loggedIn]);
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
-            <div className="App">
-                <Header/>
-                <Main
-                    cards={cards}
-                    onCardClick={handleCardClick} // нажатие на карточку
-                    onEditProfile={handleEditProfileClick} // редактирование профиля
-                    onNewPlace={handleNewPlaceClick} // добавление карточки
-                    onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
-                    onDeleteCard={handleDeletePlaceClick} // удаление карточки
-                    onCardLike={handleCardLike} // лайк/дизлайк
-                />
+            <div className="page__wrapper">
+                <Header onSignOut={handleSignOut} userEmail={userEmail} loggedIn={loggedIn}/>
+                <Switch>
+                    <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+                        <Main
+                            cards={cards}
+                            onCardClick={handleCardClick} // нажатие на карточку
+                            onEditProfile={handleEditProfileClick} // редактирование профиля
+                            onNewPlace={handleNewPlaceClick} // добавление карточки
+                            onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
+                            onDeleteCard={handleDeletePlaceClick} // удаление карточки
+                            onCardLike={handleCardLike} // лайк/дизлайк
+                            isLoadingAllData={isLoadingAllData}
+                        />
+                    </ProtectedRoute>
+                    <Route exact path="/login">
+                        <Login handleLogin={handleLogin} tokenCheck={tokenCheck}/>
+                    </Route>
+                    <Route exact path="/register">
+                        <Register handleRegister={handleRegister}/>
+                    </Route>
+                    <Route>
+                        {loggedIn ? <Redirect to="/"/> : <Redirect to="/login"/>}
+                    </Route>
+                </Switch>
                 <Footer/>
 
                 {/** Всплывашка редактирования профиля */}
                 <EditProfilePopup
                     popupOpen={editProfilePopupOpen}
+                    isLoadingAllData={isLoadingAllData}
                     onClose={closeAllPopups}
                     onUpdateUser={handleUpdateUser}
                     isLoading={isLoading}
@@ -235,6 +356,11 @@ function App() {
                     loadingText="Сохранение..."
                 >
                 </EditAvatarPopup>
+                <InfoTooltip
+                    popupOpen={infoTooltipOpen}
+                    onClose={closeAllPopups}
+                    type={infoTooltipType}
+                />
             </div>
         </CurrentUserContext.Provider>
     );

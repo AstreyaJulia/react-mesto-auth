@@ -104,6 +104,10 @@ export class Api {
             .then(res => this._handlePromiseReturn(res));
     }
 
+    getAllData() {
+        return Promise.all([this.getUserInfo(), this.getCards()]);
+    }
+
 }
 
 /** Экземпляр API
