@@ -18,17 +18,12 @@ const InfoTooltip = (props) => {
         error: {image: Tooltip_error, text: "Что-то пошло не так! Попробуйте ещё раз."} // просто ошибка
     };
 
-    return (
-        <Popup
-            className={[
-                props.popupOpen ? "popup popup_opened" : "popup"
-            ].join(" ")}
+    return (<Popup
+            className={props.popupOpen ? "popup popup_opened" : "popup"}
             closeHandler={props.onClose}
         >
             <div
-                className={[
-                    "popup__container"
-                ].join(" ")}
+                className={["popup__container"].join(" ")}
             >
                 <button
                     className="popup__close-button button"
@@ -37,12 +32,12 @@ const InfoTooltip = (props) => {
                     onClick={props.onClose}
                 />
                 <div className="popup__tooltip">
-                    <img className="popup__tooltip-image" src={tooltip_types[props.type].image} alt={tooltip_types[props.type].text}/>
+                    <img className="popup__tooltip-image" src={tooltip_types[props.type].image}
+                         alt={tooltip_types[props.type].text}/>
                     <p className="popup__tooltip-text">{tooltip_types[props.type].text}</p>
                 </div>
             </div>
-        </Popup>
-    );
+        </Popup>);
 };
 
 export default InfoTooltip;

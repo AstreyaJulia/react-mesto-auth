@@ -1,12 +1,11 @@
 import React from "react";
 import headerLogo from "../images/header__logo.png";
-import {Link, useLocation} from "react-router-dom";
+import {Link, Route} from "react-router-dom";
 
 const Header = (props) => {
 
     /** Стейт видимости кнопки меню на маленьких разрешениях */
     const [menuButtonActive, setMenuButtonActive] = React.useState(false);
-    const location = useLocation();
 
     /** Открывалка меню */
     function handleOpenMenu() {
@@ -26,10 +25,12 @@ const Header = (props) => {
                     onClick={handleOpenMenu}
                 />)}
                 {!props.loggedIn && (<>
-                    {location.pathname === "/sign-up" && (
-                        <Link to="/sign-in" className="header__button button">Войти</Link>)}
-                    {location.pathname === "/sign-in" && (
-                        <Link to="/sign-up" className="header__button button">Регистрация</Link>)}
+                    {<Route path="/sign-up">
+                        <Link to="/sign-in" className="header__button button">Войти</Link>
+                    </Route>}
+                    {<Route path="/sign-in">
+                        <Link to="/sign-up" className="header__button button">Регистрация</Link>
+                    </Route>}
                 </>)}
             </div>
             {props.loggedIn &&
